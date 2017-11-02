@@ -12,7 +12,7 @@ import time
 config_file = "conf/config.json"
 data_dir = "data/"
 
-class BeltMon(tk.Frame):
+class BeltMon:
     config = {}
     history = []
 
@@ -21,7 +21,6 @@ class BeltMon(tk.Frame):
     #       - miner strength (m3/time)
     #       - fleet size
     #       - timer resolution
-    #   - read/save configuration in JSON
     #   - timer for clipboard data catching
     #       - start/stop buttons
     #       - timer resolution
@@ -33,24 +32,40 @@ class BeltMon(tk.Frame):
     #       - probably the cycles in this time
     
     def __init__(self, parent):
-        tk.Frame.__init__(self, parent)
+        self.tk = parent
+        parent.title("EVE Belt Monitor")
 
         # reading global config file
-        f = open(config_file)
-        self.config = json.load(f)
+        with open(config_file) as f:
+            self.config = json.load(f)
+
+        parent.geometry(self.config["root"]["geometry"])
 
         # create a prompt, an input box, an output label,
         # and a button to do the computation
-        self.list = tk.Listbox(self)
-        self.submit = tk.Button(self, text="Import", command = self.importData)
-        self.export = tk.Button(self, text="Export", command = self.exportData)
-        self.output = tk.Label(self, text="")
+        self.list = tk.Listbox(parent)
+        self.submit = tk.Button(parent, text="Import", command = self.importData)
+        self.export = tk.Button(parent, text="Export", command = self.exportData)
+        self.output = tk.Label(parent, text="")
 
         # lay the widgets out on the screen.
         self.list.pack(fill="both", expand=True)
         self.output.pack(side="top", fill="x", expand=True)
         self.submit.pack(side="right")
         self.export.pack(side="right")
+
+        parent.protocol("WM_DELETE_WINDOW", self.destroyWindow)
+
+    def destroyWindow(self):
+
+        # update config with current values
+        self.config["root"]["geometry"] = self.tk.geometry()
+
+        # saving global config file
+        with open(config_file, "w") as f:
+            json.dump(self.config, f)
+
+        self.tk.destroy()
 
     def analyseDiff(self):
         entries = len(self.history)
@@ -136,5 +151,5 @@ class BeltMon(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    BeltMon(root).pack(fill="both", expand=True)
+    myBeltMon = BeltMon(root)
     root.mainloop()
