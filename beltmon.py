@@ -102,10 +102,10 @@ class BeltMon:
         return
 
     def importData(self):
-        try:
-            result = self.clipboard_get()
-        except:
-            print("No clipboard")
+        result = self.tk.clipboard_get()
+        if (result == ""):
+            self.statusMessage("No clipboard data")
+            return
 
         f = StringIO(result)
         reader = csv.reader(f, delimiter='\t')
@@ -148,6 +148,9 @@ class BeltMon:
         with open(data_dir + str(time) + '-data.csv', 'w') as f:
             writer = csv.writer(f, lineterminator='\n')
             writer.writerows(obj)
+
+    def statusMessage(self, message):
+        self.output.configure(text=message)
 
 # if this is run as a program (versus being imported),
 # create a root window and an instance of our example,
