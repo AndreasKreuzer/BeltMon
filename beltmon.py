@@ -10,6 +10,7 @@ import json
 import time
 
 config_file = "conf/config.json"
+data_dir = "data/"
 
 class BeltMon(tk.Frame):
     config = {}
@@ -111,7 +112,7 @@ class BeltMon(tk.Frame):
         #self.output.configure(text=self.history[0])
 
     def exportData(self, time, obj):
-        with open(str(time) + '-data.csv', 'w') as f:
+        with open(data_dir + str(time) + '-data.csv', 'w') as f:
             writer = csv.writer(f, lineterminator='\n')
             writer.writerows(obj)
 
