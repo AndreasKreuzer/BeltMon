@@ -5,7 +5,8 @@ try:
 except ImportError:
     # for Python 3.x
     from io import StringIO
-import csv, json
+import csv
+import json
 import time
 
 class BeltMon(tk.Frame):
