@@ -10,6 +10,7 @@ except ImportError:
 import csv
 import json
 import time
+import os
 
 config_file = "conf/config.json"
 data_dir = "data/"
@@ -139,7 +140,11 @@ class BeltMon:
         self.exportData(time.time(), newData)
 
     def exportData(self, time, obj):
-        #TODO: create data dir if not exists
+        try:
+            os.stat(data_dir)
+        except:
+            os.mkdir(data_dir)
+
         with open(data_dir + str(time) + '-data.csv', 'w') as f:
             writer = csv.writer(f, lineterminator='\n')
             writer.writerows(obj)
