@@ -110,6 +110,8 @@ class BeltMon(tk.Frame):
 
             line.insert(0, colIndex)
 
+            line[2] = int(str.replace(line[2],"'",""))
+
             self.list.insert("end", line)
 
             continue
