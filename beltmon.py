@@ -110,6 +110,8 @@ class BeltMon(tk.Frame):
 
             line.insert(0, colIndex)
 
+            self.list.insert("end", line)
+
             continue
         
         self.history.append([time.time(), newData])
