@@ -79,6 +79,8 @@ class BeltMon(tk.Frame):
         #TODO:
         #   - show a multi-col-view with data from analysedData
         #   - show overall progress from progressData
+        
+        return
 
     def importData(self):
         try:
@@ -98,6 +100,8 @@ class BeltMon(tk.Frame):
             #       - remove m3
             #       - km in m
             #   - ensure correct data in clipboard when use of a timer
+
+            continue
         
         self.history.append([time.time(), newData])
         self.exportData(time.time(), newData)
