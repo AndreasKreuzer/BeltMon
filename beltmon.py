@@ -93,21 +93,28 @@ class BeltMon(tk.Frame):
         reader = csv.reader(f, delimiter='\t')
         
         newData = list(reader)
+        lastCol = ''
+        colIndex = 1
 
         for line in newData:
             #TODO:
-            #   - ids for subtypes of asteroids
             #   - type coversions:
             #       - remove m3
             #       - km in m
             #   - ensure correct data in clipboard when use of a timer
+            if (lastCol != line[0]):
+                lastCol = line[0]
+                colIndex = 1
+            else:
+                colIndex += 1
+
+            line.insert(0, colIndex)
 
             continue
         
         self.history.append([time.time(), newData])
         self.exportData(time.time(), newData)
 
-        
         # set the output widget to have our result
         #self.output.configure(text=self.history[0])
 
