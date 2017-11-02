@@ -99,7 +99,6 @@ class BeltMon(tk.Frame):
         for line in newData:
             #TODO:
             #   - type coversions:
-            #       - remove m3
             #       - km in m
             #   - ensure correct data in clipboard when use of a timer
             if (lastCol != line[0]):
@@ -111,6 +110,9 @@ class BeltMon(tk.Frame):
             line.insert(0, colIndex)
 
             line[2] = int(str.replace(line[2],"'",""))
+
+            line[3] = str.replace(line[3],"'","")
+            line[3] = int(str.replace(line[3]," m3",""))
 
             self.list.insert("end", line)
 
