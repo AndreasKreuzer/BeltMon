@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+
 try:
     # for Python 2.x
     from StringIO import StringIO
@@ -11,6 +13,7 @@ import time
 
 config_file = "conf/config.json"
 data_dir = "data/"
+window_title = "EVE Belt Monitor" 
 
 class BeltMon:
     config = {}
@@ -33,7 +36,7 @@ class BeltMon:
     
     def __init__(self, parent):
         self.tk = parent
-        parent.title("EVE Belt Monitor")
+        parent.title(window_title)
 
         # reading global config file
         with open(config_file) as f:
@@ -57,15 +60,16 @@ class BeltMon:
         parent.protocol("WM_DELETE_WINDOW", self.destroyWindow)
 
     def destroyWindow(self):
+        # Only quit application if user accepts
+        if messagebox.askokcancel(window_title, "Do you want to quit?"):
+            # update config with current values
+            self.config["root"]["geometry"] = self.tk.geometry()
 
-        # update config with current values
-        self.config["root"]["geometry"] = self.tk.geometry()
+            # saving global config file
+            with open(config_file, "w") as f:
+                json.dump(self.config, f)
 
-        # saving global config file
-        with open(config_file, "w") as f:
-            json.dump(self.config, f)
-
-        self.tk.destroy()
+            self.tk.destroy()
 
     def analyseDiff(self):
         entries = len(self.history)
