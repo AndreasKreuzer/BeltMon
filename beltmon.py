@@ -9,7 +9,10 @@ import csv
 import json
 import time
 
+config_file = "conf/config.json"
+
 class BeltMon(tk.Frame):
+    config = {}
     history = []
 
     #TODO:
@@ -30,6 +33,10 @@ class BeltMon(tk.Frame):
     
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
+
+        # reading global config file
+        f = open(config_file)
+        self.config = json.load(f)
 
         # create a prompt, an input box, an output label,
         # and a button to do the computation
