@@ -1,0 +1,7 @@
+Bright Spodumain	48'000	768'000 m3	13 km
+Bright Spodumain	50'000	800'000 m3	13 km
+Bright Spodumain	65'000	1'040'000 m3	18 km
+Iridescent Gneiss	40'000	200'000 m3	20 km
+Magma Mercoxit	1'800	72'000 m3	21 km
+Magma Mercoxit	1'400	56'000 m3	22 km
+Sharp Crokite	24'000	384'000 m3	11 km
