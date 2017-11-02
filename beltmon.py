@@ -44,8 +44,7 @@ class BeltMon:
 
         parent.geometry(self.config["root"]["geometry"])
 
-        # create a prompt, an input box, an output label,
-        # and a button to do the computation
+        # create window elements
         self.list = tk.Listbox(parent)
         self.submit = tk.Button(parent, text="Import", command = self.importData)
         self.export = tk.Button(parent, text="Export", command = self.exportData)
@@ -88,7 +87,6 @@ class BeltMon:
         #       -> possible amount of miners
         #FEATURE:
         #   - calculate / check relative position to all asteroids
-        #       FUCK
         # ------------------------
         # Save all this to:
         #   - analysedData (relative in between Scans)
@@ -139,9 +137,6 @@ class BeltMon:
         
         self.history.append([time.time(), newData])
         self.exportData(time.time(), newData)
-
-        # set the output widget to have our result
-        #self.output.configure(text=self.history[0])
 
     def exportData(self, time, obj):
         #TODO: create data dir if not exists
