@@ -11,6 +11,7 @@ import csv
 import json
 import time
 import os
+import re
 
 config_file = "conf/config.json"
 data_dir = "data/"
@@ -116,8 +117,6 @@ class BeltMon:
 
         for line in newData:
             #TODO:
-            #   - type coversions:
-            #       - km in m
             #   - ensure correct data in clipboard when use of a timer
             if (lastCol != line[0]):
                 lastCol = line[0]
@@ -131,6 +130,13 @@ class BeltMon:
 
             line[3] = str.replace(line[3],"'","")
             line[3] = int(str.replace(line[3]," m3",""))
+
+            line[4] = str.replace(line[4],"'","")
+            if (re.search(' m$', line[4])):
+                line[4] =  int(str.replace(line[4], " m",""))
+            else:
+                line[4] =  int(str.replace(line[4], " km",""))
+                line[4] = 1000 * line[4]
 
             self.list.insert("end", line)
 
