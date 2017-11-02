@@ -121,6 +121,7 @@ class BeltMon(tk.Frame):
         #self.output.configure(text=self.history[0])
 
     def exportData(self, time, obj):
+        #TODO: create data dir if not exists
         with open(data_dir + str(time) + '-data.csv', 'w') as f:
             writer = csv.writer(f, lineterminator='\n')
             writer.writerows(obj)
