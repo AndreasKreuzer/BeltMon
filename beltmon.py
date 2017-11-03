@@ -119,7 +119,7 @@ class BeltMon:
     def importData(self):
         result = self.master.clipboard_get()
         if (result == ""):
-            self.statusMessage("No clipboard data")
+            self.statusMessage("No valid clipboard data")
             return
 
         f = StringIO(result)
@@ -134,6 +134,11 @@ class BeltMon:
         for line in newData:
             #TODO:
             #   - ensure correct data in clipboard when use of a timer
+            #   - enhance
+            if (len(line) != 4):
+                self.statusMessage("No valid clipboard data")
+                return
+
             if (lastCol != line[0]):
                 lastCol = line[0]
                 colIndex = 1
