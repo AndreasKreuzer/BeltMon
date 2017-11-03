@@ -23,6 +23,11 @@ class window:
 
         self.master.protocol("WM_DELETE_WINDOW", self.destroyWindow)
 
+        self.master.grid_rowconfigure(0, weight=1)
+        self.master.grid_columnconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
+
         self.button.grid(sticky='e')
         self.frame.grid(sticky='nsew')
 

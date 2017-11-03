@@ -58,6 +58,10 @@ class BeltMon:
         self.output = ttk.Label(self.frame, text="")
 
         # lay the widgets out on the screen.
+        self.master.grid_rowconfigure(0, weight=1)
+        self.master.grid_columnconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid(sticky='nsew')
         self.output.grid(sticky='nsw')
         self.submit.grid(sticky='e')
