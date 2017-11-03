@@ -129,6 +129,8 @@ class BeltMon:
         lastCol = ''
         colIndex = 1
 
+        datalist.clear()
+
         for line in newData:
             #TODO:
             #   - ensure correct data in clipboard when use of a timer
