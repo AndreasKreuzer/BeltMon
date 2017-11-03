@@ -84,8 +84,6 @@ class BeltMon:
 
         # create session window
         self.sessionwindow = tk.Toplevel(self.master)
-        22
-
         self.sessionapp = ui.session.window(self.sessionwindow, self.config, self.importhistory)
 
     def destroyWindow(self):
