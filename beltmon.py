@@ -234,15 +234,15 @@ class BeltMon:
         # export data to cvs file
         #TODO:
         #   - config for bool if user wants to export automatically
-        self.exportData(time.time(), newData)
+        self.exportData(time.gmtime(timestamp), newData)
 
-    def exportData(self, time, obj):
+    def exportData(self, timestamp, obj):
         try:
             os.stat(data_dir)
         except:
             os.mkdir(data_dir)
 
-        with open(data_dir + str(time) + '-data.csv', 'w') as f:
+        with open(data_dir + time.strftime('%Y%m%d-%H%M%S', timestamp) + '.csv', 'w') as f:
             writer = csv.writer(f, lineterminator='\n')
             writer.writerows(obj)
 
