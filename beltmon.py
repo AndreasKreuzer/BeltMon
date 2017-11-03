@@ -145,9 +145,6 @@ class BeltMon:
         newData = list(reader)
 
         # clipboard data valid?
-        #TODO:
-        #   - ensure correct data in clipboard when use of a timer
-        #   - enhance
         try:
             if (len(newData[0]) != 4):
                 self.statusMessage("No valid clipboard data")
@@ -165,6 +162,10 @@ class BeltMon:
         total_asteroids = len(newData)
 
         for line in newData:
+            # skip if a caption label line is present
+            if (len(line) != 4):
+                continue
+
             if (lastCol != line[0]):
                 lastCol = line[0]
                 colIndex = 1
