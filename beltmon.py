@@ -168,6 +168,7 @@ class BeltMon:
             if (len(line) != 4):
                 continue
 
+            # create asteroid type indices (only view)
             if (lastCol != line[0]):
                 lastCol = line[0]
                 colIndex = 1
@@ -177,12 +178,14 @@ class BeltMon:
 
             line.insert(0, colIndex)
 
-
+            # asteroid items amount
             line[2] = int(str.replace(line[2],"'",""))
 
+            # asteroid volume
             line[3] = str.replace(line[3],"'","")
             line[3] = int(str.replace(line[3]," m3",""))
-
+            
+            # distance to asteroid
             line[4] = str.replace(line[4],"'","")
             if (re.search(' m$', line[4])):
                 line[4] =  int(str.replace(line[4], " m",""))
