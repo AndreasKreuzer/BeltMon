@@ -6,7 +6,7 @@ from tkinter import messagebox
 from . import listbox
 
 window_title = "Session data" 
-columns = ['time', 'total asteroids', 'asteroid types']
+columns = ['time', 'total asteroids', 'asteroid types', 'asteroid overlaps']
 
 class window:
     def __init__(self, parent, config, datalist):

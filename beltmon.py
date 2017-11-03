@@ -160,6 +160,7 @@ class BeltMon:
         datalist.clear()
         total_types = 0
         total_asteroids = len(newData)
+        total_duplicates = 0
 
         for line in newData:
             # skip if a caption label line is present
@@ -200,6 +201,8 @@ class BeltMon:
             if (uniqueID in datalist):
                 # key allready exists, we have a asteroid of same type in same distance
                 #   -> enhance uniqueID
+                total_duplicates += 1
+
                 if (type(datalist[uniqueID]) == int):
                     # iterate
                     datalist[uniqueID] += 1
@@ -221,7 +224,8 @@ class BeltMon:
                 [
                     time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(timestamp)),
                     total_asteroids,
-                    total_types
+                    total_types,
+                    total_duplicates
                 ]
             )
         self.sessionapp.listbox._build_tree()
