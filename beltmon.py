@@ -117,7 +117,7 @@ class BeltMon:
         return
 
     def importData(self):
-        result = self.tk.clipboard_get()
+        result = self.master.clipboard_get()
         if (result == ""):
             self.statusMessage("No clipboard data")
             return
@@ -158,7 +158,11 @@ class BeltMon:
         
         self.listbox._build_tree()
 
-        self.history.append([time.time(), newData])
+        timestamp = time.time()
+        self.history.append([timestamp, newData])
+        historylist.append([timestamp, len(newData)])
+        self.sessionapp.listbox._build_tree()
+
         self.exportData(time.time(), newData)
 
     def exportData(self, time, obj):

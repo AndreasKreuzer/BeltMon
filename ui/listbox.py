@@ -31,6 +31,9 @@ class listbox(object):
 
 
     def _build_tree(self):
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
         for col in self.columns:
             self.tree.heading(col, text=col.title(),
                 command=lambda c=col: self.sortby(self.tree, c, 0))
