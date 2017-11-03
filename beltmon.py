@@ -147,15 +147,20 @@ class BeltMon:
         # we build a new data set
         timestamp = time.time()
         datalist.clear()
-
-        for line in newData:
-            #TODO:
-            #   - ensure correct data in clipboard when use of a timer
-            #   - enhance
-            if (len(line) != 4):
+        
+        # clipboard data valid?
+        #TODO:
+        #   - ensure correct data in clipboard when use of a timer
+        #   - enhance
+        try:
+            if (len(newData[0]) != 4):
                 self.statusMessage("No valid clipboard data")
                 return
+        except:
+            self.statusMessage("No valid clipboard data")
+            return
 
+        for line in newData:
             if (lastCol != line[0]):
                 lastCol = line[0]
                 colIndex = 1
