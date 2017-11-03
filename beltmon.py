@@ -1,14 +1,9 @@
+# import main modules
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.font as tkFont
 import tkinter.ttk as ttk
-
-try:
-    # for Python 2.x
-    from StringIO import StringIO
-except ImportError:
-    # for Python 3.x
-    from io import StringIO
+from io import StringIO
 import csv
 import json
 import time
