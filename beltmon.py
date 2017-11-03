@@ -14,17 +14,29 @@ import re
 import ui.listbox
 import ui.session
 
+# global static definitions
 config_file = "conf/config.json"
 data_dir = "data/"
 window_title = "EVE Belt Monitor" 
 columns = ['id', 'type', 'items', 'volume', 'distance']
-datalist = list()
-historylist = list()
+datalist = {}
+
+#TODO:
+#   - translations
+ores = {
+    'Bright Spodumain': 1,
+    'Crimson Arkonor': 2,
+    'Iridescent Gneiss': 3,
+    'Magma Mercoxit': 4,
+    'Onyx Ochre': 5,
+    'Sharp Crokite': 6,
+    'Triclinic Bistot': 7
+    }
 
 class BeltMon:
     config = {}
-    history = []
-
+    history = {}
+    historylist = {}
     #TODO:
     #   - configuration of application
     #       - miner strength (m3/time)
@@ -71,7 +83,7 @@ class BeltMon:
 
         # create session window
         self.sessionwindow = tk.Toplevel(self.master)
-        self.sessionapp = ui.session.window(self.sessionwindow, self.config, historylist)
+        self.sessionapp = ui.session.window(self.sessionwindow, self.config, self.historylist)
 
     def destroyWindow(self):
         # Only quit application if user accepts
@@ -117,18 +129,23 @@ class BeltMon:
         return
 
     def importData(self):
+        # reading from clipboard
         result = self.master.clipboard_get()
         if (result == ""):
             self.statusMessage("No valid clipboard data")
             return
 
+        #TODO:
+        #   config for other delimiters enables import from excel?
         f = StringIO(result)
         reader = csv.reader(f, delimiter='\t')
-        
-        newData = tuple(reader)
+        newData = list(reader)
+
         lastCol = ''
         colIndex = 1
 
+        # we build a new data set
+        timestamp = time.time()
         datalist.clear()
 
         for line in newData:
@@ -147,6 +164,7 @@ class BeltMon:
 
             line.insert(0, colIndex)
 
+
             line[2] = int(str.replace(line[2],"'",""))
 
             line[3] = str.replace(line[3],"'","")
@@ -159,17 +177,42 @@ class BeltMon:
                 line[4] =  int(str.replace(line[4], " km",""))
                 line[4] = 1000 * line[4]
 
-            datalist.insert(0, line)
+            # we build a unique id with ore type and distance
+            # this is a approach to resolve a problem not a solution
+            try:
+                uniqueID = str(ores[line[1]]) + '_' + str(line[4])
+            except:
+                # ores dict not complete or no translation
+                print("error building uniqueID. ore type: ", line[1])
+                return
 
-            continue
+            if (uniqueID in datalist):
+                # key allready exists, we have a asteroid of same type in same distance
+                #   -> enhance uniqueID
+                if (type(datalist[uniqueID]) == int):
+                    # iterate
+                    datalist[uniqueID] += 1
+                    datalist[uniqueID + '_' + str(datalist[uniqueID])] = line
+                else:
+                    # iterate and move existing
+                    datalist[uniqueID + '_1'] = datalist[uniqueID]
+                    datalist[uniqueID] = 2
+                    datalist[uniqueID + '_2'] = line
+            else:
+                # seems unique until now, insert
+                datalist[uniqueID] = line
         
-        self.listbox._build_tree()
+        # save data set in history
+        self.history[timestamp] = datalist
 
-        timestamp = time.time()
-        self.history.append([timestamp, newData])
-        historylist.append([timestamp, len(newData)])
-        self.sessionapp.listbox._build_tree()
+        #TODO:
+        #   - new method of treeview data into treeview
+        #historylist.append([timestamp, len(newData)])
+        #self.sessionapp.listbox._build_tree()
 
+        # export data to cvs file
+        #TODO:
+        #   - config for bool if user wants to export automatically
         self.exportData(time.time(), newData)
 
     def exportData(self, time, obj):
