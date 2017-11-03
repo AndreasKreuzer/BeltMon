@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
+import tkinter.font as tkFont
+import tkinter.ttk as ttk
 
 try:
     # for Python 2.x
@@ -13,9 +15,15 @@ import time
 import os
 import re
 
+# importing sub modules from package
+import ui.listbox
+
 config_file = "conf/config.json"
 data_dir = "data/"
 window_title = "EVE Belt Monitor" 
+columns = ['id', 'type', 'items', 'volume', 'distance']
+datalist = list()
+
 
 class BeltMon:
     config = {}
@@ -47,13 +55,13 @@ class BeltMon:
         parent.geometry(self.config["root"]["geometry"])
 
         # create window elements
-        self.list = tk.Listbox(parent)
+        self.listbox = ui.listbox.listbox(columns, datalist)
         self.submit = tk.Button(parent, text="Import", command = self.importData)
         self.export = tk.Button(parent, text="Export", command = self.exportData)
         self.output = tk.Label(parent, text="")
 
         # lay the widgets out on the screen.
-        self.list.pack(fill="both", expand=True)
+        #self.list.pack(fill="both", expand=True)
         self.output.pack(side="top", fill="x", expand=True)
         self.submit.pack(side="right")
         self.export.pack(side="right")
@@ -111,7 +119,7 @@ class BeltMon:
         f = StringIO(result)
         reader = csv.reader(f, delimiter='\t')
         
-        newData = list(reader)
+        newData = tuple(reader)
         lastCol = ''
         colIndex = 1
 
@@ -138,10 +146,12 @@ class BeltMon:
                 line[4] =  int(str.replace(line[4], " km",""))
                 line[4] = 1000 * line[4]
 
-            self.list.insert("end", line)
+            datalist.insert(0, line)
 
             continue
         
+        self.listbox._build_tree()
+
         self.history.append([time.time(), newData])
         self.exportData(time.time(), newData)
 
