@@ -5,7 +5,8 @@ import tkinter.ttk as ttk
 class listbox(object):
     """use a ttk.TreeView as a multicolumn ListBox"""
 
-    def __init__(self, columns, data):
+    def __init__(self, parent, columns, data):
+        self.master = parent
         self.columns = columns
         self.data = data
         self.tree = None
@@ -13,21 +14,21 @@ class listbox(object):
         self._build_tree()
 
     def _setup_widgets(self):
-        container = ttk.Frame()
-        container.pack(fill='both', expand=True)
+        self.frame = ttk.Frame(self.master)
+        self.frame.grid(sticky='nsew')
+
         # create a treeview with dual scrollbars
-        self.tree = ttk.Treeview(columns=self.columns, show="headings")
-        vsb = ttk.Scrollbar(orient="vertical",
-            command=self.tree.yview)
-        hsb = ttk.Scrollbar(orient="horizontal",
-            command=self.tree.xview)
-        self.tree.configure(yscrollcommand=vsb.set,
-            xscrollcommand=hsb.set)
-        self.tree.grid(column=0, row=0, sticky='nsew', in_=container)
-        vsb.grid(column=1, row=0, sticky='ns', in_=container)
-        hsb.grid(column=0, row=1, sticky='ew', in_=container)
-        container.grid_columnconfigure(0, weight=1)
-        container.grid_rowconfigure(0, weight=1)
+        self.tree = ttk.Treeview(self.frame, columns=self.columns, show="headings")
+        vsb = ttk.Scrollbar(self.frame, orient="vertical", command=self.tree.yview)
+        hsb = ttk.Scrollbar(self.frame, orient="horizontal", command=self.tree.xview)
+
+        self.tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
+        self.tree.grid(column=0, row=0, sticky='nsew', in_=self.frame)
+        vsb.grid(column=1, row=0, sticky='ns', in_=self.frame)
+        hsb.grid(column=0, row=1, sticky='ew', in_=self.frame)
+        self.frame.grid_columnconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(0, weight=1)
+
 
     def _build_tree(self):
         for col in self.columns:

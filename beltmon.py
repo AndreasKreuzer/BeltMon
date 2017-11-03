@@ -12,13 +12,14 @@ import re
 
 # importing sub modules from package
 import ui.listbox
+import ui.session
 
 config_file = "conf/config.json"
 data_dir = "data/"
 window_title = "EVE Belt Monitor" 
 columns = ['id', 'type', 'items', 'volume', 'distance']
 datalist = list()
-
+historylist = list()
 
 class BeltMon:
     config = {}
@@ -40,41 +41,46 @@ class BeltMon:
     #       - probably the cycles in this time
     
     def __init__(self, parent):
-        self.tk = parent
-        parent.title(window_title)
-
+        self.master = parent
+        self.frame = ttk.Frame(self.master)
+        self.master.title(window_title)
+        
         # reading global config file
         with open(config_file) as f:
             self.config = json.load(f)
 
-        parent.geometry(self.config["root"]["geometry"])
+        self.master.geometry(self.config["root"]["geometry"])
 
         # create window elements
-        self.listbox = ui.listbox.listbox(columns, datalist)
-        self.submit = tk.Button(parent, text="Import", command = self.importData)
-        self.export = tk.Button(parent, text="Export", command = self.exportData)
-        self.output = tk.Label(parent, text="")
+        self.listbox = ui.listbox.listbox(self.frame, columns, datalist)
+        self.submit = ttk.Button(self.frame, text="Import", command = self.importData)
+        self.export = ttk.Button(self.frame, text="Export", command = self.exportData)
+        self.output = ttk.Label(self.frame, text="")
 
         # lay the widgets out on the screen.
-        #self.list.pack(fill="both", expand=True)
-        self.output.pack(side="top", fill="x", expand=True)
-        self.submit.pack(side="right")
-        self.export.pack(side="right")
+        self.frame.grid(sticky='nsew')
+        self.output.grid(sticky='nsw')
+        self.submit.grid(sticky='e')
+        self.export.grid(sticky='e')
 
-        parent.protocol("WM_DELETE_WINDOW", self.destroyWindow)
+        self.master.protocol("WM_DELETE_WINDOW", self.destroyWindow)
+
+        # create session window
+        self.sessionwindow = tk.Toplevel(self.master)
+        self.sessionapp = ui.session.window(self.sessionwindow, self.config, historylist)
 
     def destroyWindow(self):
         # Only quit application if user accepts
         if (self.config["application"]["askforquit"] == 0 or
                 messagebox.askokcancel(window_title, "Do you want to quit?")):
             # update config with current values
-            self.config["root"]["geometry"] = self.tk.geometry()
+            self.config["root"]["geometry"] = self.master.geometry()
 
             # saving global config file
             with open(config_file, "w") as f:
-                json.dump(self.config, f)
+                json.dump(self.config, f, indent=4)
 
-            self.tk.destroy()
+            self.master.destroy()
 
     def analyseDiff(self):
         entries = len(self.history)
@@ -169,6 +175,6 @@ class BeltMon:
 # then start the event loop
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    myBeltMon = BeltMon(root)
-    root.mainloop()
+    master = tk.Tk()
+    myBeltMon = BeltMon(master)
+    master.mainloop()
