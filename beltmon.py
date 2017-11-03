@@ -20,6 +20,7 @@ data_dir = "data/"
 window_title = "EVE Belt Monitor" 
 columns = ['id', 'type', 'items', 'volume', 'distance']
 datalist = {}
+importsummary = {}
 
 #TODO:
 #   - translations
@@ -35,8 +36,8 @@ ores = {
 
 class BeltMon:
     config = {}
-    history = []
-    historylist = {}
+    datahistory = []
+    importhistory = []
     #TODO:
     #   - configuration of application
     #       - miner strength (m3/time)
@@ -83,7 +84,9 @@ class BeltMon:
 
         # create session window
         self.sessionwindow = tk.Toplevel(self.master)
-        self.sessionapp = ui.session.window(self.sessionwindow, self.config, self.historylist)
+        22
+
+        self.sessionapp = ui.session.window(self.sessionwindow, self.config, self.importhistory)
 
     def destroyWindow(self):
         # Only quit application if user accepts
@@ -99,10 +102,10 @@ class BeltMon:
             self.master.destroy()
 
     def analyseDiff(self):
-        entries = len(self.history)
+        entries = len(self.datahistory)
         try:
-            actual = self.history[entries-1]
-            last = self.history[entries-2]
+            actual = self.datahistory[entries-1]
+            last = self.datahistory[entries-2]
         except:
             return
 
@@ -141,13 +144,6 @@ class BeltMon:
         reader = csv.reader(f, delimiter='\t')
         newData = list(reader)
 
-        lastCol = ''
-        colIndex = 1
-
-        # we build a new data set
-        timestamp = time.time()
-        datalist.clear()
-        
         # clipboard data valid?
         #TODO:
         #   - ensure correct data in clipboard when use of a timer
@@ -159,11 +155,20 @@ class BeltMon:
         except:
             self.statusMessage("No valid clipboard data")
             return
+        
+        # we build a new data set
+        lastCol = ''
+        colIndex = 1
+        timestamp = time.time()
+        datalist.clear()
+        total_types = 0
+        total_asteroids = len(newData)
 
         for line in newData:
             if (lastCol != line[0]):
                 lastCol = line[0]
                 colIndex = 1
+                total_types += 1
             else:
                 colIndex += 1
 
@@ -208,12 +213,17 @@ class BeltMon:
                 datalist[uniqueID] = line
         
         # save data set in history
-        self.history.append([timestamp, datalist])
+        self.datahistory.append([timestamp, datalist])
 
-        #TODO:
-        #   - new method of view data into treeview
-        #historylist.append([timestamp, len(newData)])
-        #self.sessionapp.listbox._build_tree()
+        # save and view import summary in session window
+        self.importhistory.append(
+                [
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(timestamp)),
+                    total_asteroids,
+                    total_types
+                ]
+            )
+        self.sessionapp.listbox._build_tree()
 
         # export data to cvs file
         #TODO:
