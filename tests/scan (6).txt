@@ -1,0 +1,45 @@
+Bright Spodumain	32'895	526'320 m3	358 m
+Bright Spodumain	65'000	1'040'000 m3	13 km
+Bright Spodumain	58'759	940'144 m3	30 km
+Bright Spodumain	20'154	322'464 m3	30 km
+Bright Spodumain	51'510	824'160 m3	32 km
+Bright Spodumain	49'987	799'792 m3	35 km
+Bright Spodumain	45'000	720'000 m3	38 km
+Bright Spodumain	20'752	332'032 m3	40 km
+Bright Spodumain	71'796	1'148'736 m3	46 km
+Bright Spodumain	36'000	576'000 m3	50 km
+Bright Spodumain	51'796	828'736 m3	51 km
+Bright Spodumain	46'368	741'888 m3	58 km
+Bright Spodumain	40'000	640'000 m3	59 km
+Bright Spodumain	51'046	816'736 m3	83 km
+Crimson Arkonor	3'924	62'784 m3	34 km
+Crimson Arkonor	1'924	30'784 m3	53 km
+Iridescent Gneiss	40'000	200'000 m3	26 km
+Iridescent Gneiss	56'000	280'000 m3	27 km
+Iridescent Gneiss	37'008	185'040 m3	39 km
+Iridescent Gneiss	40'000	200'000 m3	40 km
+Iridescent Gneiss	15'392	76'960 m3	41 km
+Iridescent Gneiss	17'632	88'160 m3	46 km
+Iridescent Gneiss	36'192	180'960 m3	48 km
+Iridescent Gneiss	34'736	173'680 m3	59 km
+Iridescent Gneiss	14'736	73'680 m3	66 km
+Magma Mercoxit
+Magma Mercoxit	803	32'120 m3	38 km
+Magma Mercoxit	248	9'920 m3	69 km
+Onyx Ochre
+Onyx Ochre	9'340	74'720 m3	27 km
+Sharp Crokite
+Sharp Crokite	11'570	185'120 m3	25 km
+Sharp Crokite	5'924	94'784 m3	40 km
+Sharp Crokite	8'332	133'312 m3	41 km
+Sharp Crokite	24'436	390'976 m3	42 km
+Sharp Crokite	15'924	254'784 m3	54 km
+Sharp Crokite	9'557	152'912 m3	57 km
+Sharp Crokite	25'500	408'000 m3	63 km
+Sharp Crokite	11'424	182'784 m3	66 km
+Triclinic Bistot
+Triclinic Bistot	424	6'784 m3	43 km
+Triclinic Bistot	2'924	46'784 m3	46 km
+Triclinic Bistot	6'477	103'632 m3	50 km
+Triclinic Bistot	2'628	42'048 m3	59 km
+Triclinic Bistot	5'924	94'784 m3	92 km
