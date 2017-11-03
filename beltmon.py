@@ -70,7 +70,8 @@ class BeltMon:
 
     def destroyWindow(self):
         # Only quit application if user accepts
-        if messagebox.askokcancel(window_title, "Do you want to quit?"):
+        if (self.config["application"]["askforquit"] == 0 or
+                messagebox.askokcancel(window_title, "Do you want to quit?")):
             # update config with current values
             self.config["root"]["geometry"] = self.tk.geometry()
 
