@@ -35,7 +35,7 @@ ores = {
 
 class BeltMon:
     config = {}
-    history = {}
+    history = []
     historylist = {}
     #TODO:
     #   - configuration of application
@@ -208,10 +208,10 @@ class BeltMon:
                 datalist[uniqueID] = line
         
         # save data set in history
-        self.history[timestamp] = datalist
+        self.history.append([timestamp, datalist])
 
         #TODO:
-        #   - new method of treeview data into treeview
+        #   - new method of view data into treeview
         #historylist.append([timestamp, len(newData)])
         #self.sessionapp.listbox._build_tree()
 
