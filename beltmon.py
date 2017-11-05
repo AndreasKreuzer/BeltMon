@@ -38,7 +38,8 @@ class BeltMon:
     config = {}
     datahistory = []
     importhistory = []
-    currentdiff = []
+    diffhistory = []
+    summaryhistory = []
     #TODO:
     #   - configuration of application
     #       - miner strength (m3/time)
@@ -129,6 +130,49 @@ class BeltMon:
         # Save all this to:
         #   - analysedData (relative in between Scans)
         #   - progressData (over all progress)
+
+        timestamp_last = last[0]
+        timestamp_actual= actual[0]
+        #TODO:
+        #   - calculate time delta
+        #   - ensure time delta is big enough (2 * minercycle)
+
+        diffitems = {}
+        diffsummary = {}
+        diffsummary['vol'] = 0
+        diffsummary['active'] = 0
+        diffsummary['deleted'] = 0
+
+        for itemid, data in last[1].items():
+            newitem = {}
+            newitem['states'] = []
+
+            try:
+                newdata = actual[1][itemid]
+            except:
+                # id does not exist in new scan asteroid has been
+                # destroyed/completly mined or user moved away
+                newitem['states'].append('deleted')
+                diffsummary['deleted'] += 1
+
+                diffitems[itemid] = newitem
+                continue
+
+            # we can compare to the new scan
+            newitem['vol'] = data[3] - newdata[3]
+            diffsummary['vol'] += vol_diff
+
+            if (newitem['vol'] > 0):
+                # there is a mining occuring on that asteroid
+                newitem['states'].append('active')
+                diffsummary['active'] += 1
+            else:
+                newitem['states'].append('inactive')
+
+            diffitems[itemid] = newitem
+
+        self.diffhistory.append([timestamp_actual, diffitems])
+        self.summaryhistory.append([timestamp_actual, diffsummary])
 
     def showAnalysis(self):
 
