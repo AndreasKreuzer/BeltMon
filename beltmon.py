@@ -38,6 +38,7 @@ class BeltMon:
     config = {}
     datahistory = []
     importhistory = []
+    currentdiff = []
     #TODO:
     #   - configuration of application
     #       - miner strength (m3/time)
@@ -92,7 +93,8 @@ class BeltMon:
                 messagebox.askokcancel(window_title, "Do you want to quit?")):
             # update config with current values
             self.config["root"]["geometry"] = self.master.geometry()
-            self.config["session"]["geometry"] = self.sessionwindow.geometry()
+            try:
+                self.config["session"]["geometry"] = self.sessionwindow.geometry()
 
             # saving global config file
             with open(config_file, "w") as f:
