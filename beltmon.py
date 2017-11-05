@@ -52,12 +52,12 @@ class BeltMon:
     #   - show a timer for mining cycles
     #       - shows time since last scan
     #       - probably the cycles in this time
-    
+
     def __init__(self, parent):
         self.master = parent
         self.frame = ttk.Frame(self.master)
         self.master.title(window_title)
-        
+
         # reading global config file
         with open(config_file) as f:
             self.config = json.load(f)
@@ -127,7 +127,7 @@ class BeltMon:
         #TODO:
         #   - show a multi-col-view with data from analysedData
         #   - show overall progress from progressData
-        
+
         return
 
     def importData(self):
@@ -151,7 +151,7 @@ class BeltMon:
         except:
             self.statusMessage("No valid clipboard data")
             return
-        
+
         # we build a new data set
         lastCol = ''
         colIndex = 1
@@ -182,7 +182,7 @@ class BeltMon:
             # asteroid volume
             line[3] = str.replace(line[3],"'","")
             line[3] = int(str.replace(line[3]," m3",""))
-            
+
             # distance to asteroid
             line[4] = str.replace(line[4],"'","")
             if (re.search(' m$', line[4])):
@@ -217,7 +217,7 @@ class BeltMon:
             else:
                 # seems unique until now, insert
                 datalist[uniqueID] = line
-        
+
         # save data set in history
         self.datahistory.append([timestamp, datalist])
 
