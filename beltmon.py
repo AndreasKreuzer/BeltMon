@@ -95,6 +95,12 @@ class BeltMon:
             self.config["root"]["geometry"] = self.master.geometry()
             try:
                 self.config["session"]["geometry"] = self.sessionwindow.geometry()
+            except:
+                # no window present
+                #TODO:
+                #   - this will be fixed with hide/unhide child windows instead
+                #     of allowing to close and destruct by user
+                print('session window allready closed by user')
 
             # saving global config file
             with open(config_file, "w") as f:
