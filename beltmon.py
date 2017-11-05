@@ -13,14 +13,11 @@ import re
 # importing sub modules from package
 import ui.listbox
 import ui.session
+import ui.monitor
 
 # global static definitions
 config_file = "conf/config.json"
 data_dir = "data/"
-window_title = "EVE Belt Monitor" 
-columns = ['id', 'type', 'items', 'volume', 'distance']
-datalist = {}
-importsummary = {}
 
 #TODO:
 #   - translations
