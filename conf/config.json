@@ -1,12 +1,12 @@
 {
+    "session": {
+        "geometry": "402x325+122+1012"
+    },
     "application": {
         "askforquit": 0
     },
     "root": {
         "geometry": "522x503+544+837"
-    },
-    "session": {
-        "geometry": "402x325+122+1012"
     },
     "miner": {
         "avg_amount": 3282,
