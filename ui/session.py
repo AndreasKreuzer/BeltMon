@@ -9,16 +9,23 @@ window_title = "Session data"
 columns = ['time', 'total asteroids', 'asteroid types', 'asteroid overlaps']
 
 class window:
-    def __init__(self, parent, config, datalist):
-        self.master = parent
-        self.config = config
-        self.datalist = datalist
+    def __init__(self, parent):
+        """Constructor for monitor window class.
+
+
+        Keyword arguments:
+        parent -- core class
+
+        """
+        self.core = parent
+        self.master = parent.sessionwindow
         self.frame = ttk.Frame(self.master)
         self.master.title(window_title)
-        self.master.geometry(self.config["session"]["geometry"])
+        self.master.geometry(self.core.config["session"]["geometry"])
 
         # create window elements
-        self.listbox = listbox.listbox(self.frame, columns, self.datalist)
+        self.listbox = listbox.listbox(self.frame, columns)
+        self.listbox.setColumns(columns)
         self.button = ttk.Button(self.frame, text="foo")
 
         self.master.protocol("WM_DELETE_WINDOW", self.destroyWindow)
@@ -32,7 +39,13 @@ class window:
         self.frame.grid(sticky='nsew')
 
     def destroyWindow(self):
-        # update config with current values
-        self.config["session"]["geometry"] = self.master.geometry()
+        """Window delete event raised by user."""
+        self.core.config["session"]["geometry"] = self.master.geometry()
 
+        #TODO:
+        #   - hide/show window instead of delete tk object."
         self.master.destroy()
+
+    def configureEvent(self):
+        """Read and apply configuration object from core class."""
+        self.master.geometry(self.core.config["session"]["geometry"])
