@@ -8,22 +8,29 @@ from . import listbox
 
 # global static definitions
 window_title = "EVE Belt Monitor" 
-columns = ['id', 'type', 'items', 'volume', 'distance']
+columns = ['index', 'type', 'distance', 'volume', 'time']
 
-class monitor:
-    config = {}
-
+class window:
     def __init__(self, parent):
-        self.master = parent
+        """Constructor for monitor window class.
+
+
+        Keyword arguments:
+        parent -- core class
+
+        """
+        self.core = parent
+        self.master = parent.monitorwindow
         self.frame = ttk.Frame(self.master)
         self.master.title(window_title)
 
-        self.master.geometry(self.config["root"]["geometry"])
+        self.master.geometry(self.core.config["root"]["geometry"])
 
         # create window elements
-        self.listbox = ui.listbox.listbox(self.frame, columns, datalist)
-        self.submit = ttk.Button(self.frame, text="Import", command = self.importData)
-        self.export = ttk.Button(self.frame, text="Export", command = self.exportData)
+        self.listbox = listbox.listbox(self.frame, columns)
+        self.listbox.setColumns(columns)
+        self.submit = ttk.Button(self.frame, text="Import", \
+                command = self.core.importData)
         self.output = ttk.Label(self.frame, text="")
 
         # lay the widgets out on the screen.
@@ -34,18 +41,18 @@ class monitor:
         self.frame.grid(sticky='nsew')
         self.output.grid(sticky='nsw')
         self.submit.grid(sticky='e')
-        self.export.grid(sticky='e')
 
         self.master.protocol("WM_DELETE_WINDOW", self.destroyWindow)
 
     def destroyWindow(self):
+        """Delete window event raised by user."""
         # Only quit application if user accepts
-        if (self.config["application"]["askforquit"] == 0 or
+        if (self.core.config["application"]["askforquit"] == 0 or
                 messagebox.askokcancel(window_title, "Do you want to quit?")):
             # update config with current values
-            self.config["root"]["geometry"] = self.master.geometry()
+            self.core.config["root"]["geometry"] = self.master.geometry()
             try:
-                self.config["session"]["geometry"] = self.sessionwindow.geometry()
+                self.core.config["session"]["geometry"] = self.core.sessionwindow.geometry()
             except:
                 # no window present
                 #TODO:
@@ -53,8 +60,9 @@ class monitor:
                 #     of allowing to close and destruct by user
                 print('session window allready closed by user')
 
-            # saving global config file
-            with open(config_file, "w") as f:
-                json.dump(self.config, f, indent=4)
-
+            self.core.writeConfig()
             self.master.destroy()
+
+    def configureEvent(self):
+        """Read and apply configuration object from core class."""
+        self.master.geometry(self.core.config["root"]["geometry"])

@@ -1,8 +1,5 @@
 # import main modules
 import tkinter as tk
-from tkinter import messagebox
-import tkinter.font as tkFont
-import tkinter.ttk as ttk
 from io import StringIO
 import csv
 import json
@@ -11,7 +8,6 @@ import os
 import re
 
 # importing sub modules from package
-import ui.listbox
 import ui.session
 import ui.monitor
 
@@ -31,83 +27,79 @@ ores = {
     'Triclinic Bistot': 7
     }
 
+"""
+TODO:
+   - configuration of application
+       - miner strength (m3/time)
+       - fleet size
+       - timer resolution
+   - timer for clipboard data catching
+       - start/stop buttons
+       - timer resolution
+   - session handling
+       - start a new session
+       - session data structure (export)
+   - show a timer for mining cycles
+       - shows time since last scan
+       - probably the cycles in this time
+"""
+
 class BeltMon:
     config = {}
     datahistory = []
     importhistory = []
     diffhistory = []
     summaryhistory = []
-    #TODO:
-    #   - configuration of application
-    #       - miner strength (m3/time)
-    #       - fleet size
-    #       - timer resolution
-    #   - timer for clipboard data catching
-    #       - start/stop buttons
-    #       - timer resolution
-    #   - session handling
-    #       - start a new session
-    #       - session data structure (export)
-    #   - show a timer for mining cycles
-    #       - shows time since last scan
-    #       - probably the cycles in this time
+
+    monitorwindow = None
+    monitor = None
+
+    sessionwindow = None
+    session = None
 
     def __init__(self, parent):
-        self.master = parent
-        self.frame = ttk.Frame(self.master)
-        self.master.title(window_title)
+        """Constructor for core class.
 
-        # reading global config file
+
+        Keyword arguments:
+        parent -- root tk object
+
+        """
+        # main tk instance
+        self.master = parent
+
+        # load global configuration
+        self.loadConfig()
+
+        # create monitor window
+        self.monitorwindow = parent
+        self.monitor = ui.monitor.window(self)
+
+        # create session window
+        self.sessionwindow = tk.Toplevel(self.monitorwindow)
+        self.session = ui.session.window(self)
+
+        self.configureEvent()
+
+    def loadConfig(self):
+        """Read global config file."""
         with open(config_file) as f:
             self.config = json.load(f)
 
-        self.master.geometry(self.config["root"]["geometry"])
+    def configureEvent(self):
+        """Issue configuration event on child windows."""
+        self.monitor.configureEvent()
+        self.monitor.configureEvent()
 
-        # create window elements
-        self.listbox = ui.listbox.listbox(self.frame, columns, datalist)
-        self.submit = ttk.Button(self.frame, text="Import", command = self.importData)
-        self.export = ttk.Button(self.frame, text="Export", command = self.exportData)
-        self.output = ttk.Label(self.frame, text="")
-
-        # lay the widgets out on the screen.
-        self.master.grid_rowconfigure(0, weight=1)
-        self.master.grid_columnconfigure(0, weight=1)
-        self.frame.grid_rowconfigure(0, weight=1)
-        self.frame.grid_columnconfigure(0, weight=1)
-        self.frame.grid(sticky='nsew')
-        self.output.grid(sticky='nsw')
-        self.submit.grid(sticky='e')
-        self.export.grid(sticky='e')
-
-        self.master.protocol("WM_DELETE_WINDOW", self.destroyWindow)
-
-        # create session window
-        self.sessionwindow = tk.Toplevel(self.master)
-        self.sessionapp = ui.session.window(self.sessionwindow, self.config, self.importhistory)
-
-    def destroyWindow(self):
-        # Only quit application if user accepts
-        if (self.config["application"]["askforquit"] == 0 or
-                messagebox.askokcancel(window_title, "Do you want to quit?")):
-            # update config with current values
-            self.config["root"]["geometry"] = self.master.geometry()
-            try:
-                self.config["session"]["geometry"] = self.sessionwindow.geometry()
-            except:
-                # no window present
-                #TODO:
-                #   - this will be fixed with hide/unhide child windows instead
-                #     of allowing to close and destruct by user
-                print('session window allready closed by user')
-
-            # saving global config file
-            with open(config_file, "w") as f:
-                json.dump(self.config, f, indent=4)
-
-            self.master.destroy()
+    def writeConfig(self):
+        """Write global config file."""
+        with open(config_file, "w") as f:
+            json.dump(self.config, f, indent=4)
 
     def analyseDiff(self):
         entries = len(self.datahistory)
+        if (entries < 2):
+            return
         try:
             actual = self.datahistory[entries-1]
             last = self.datahistory[entries-2]
@@ -141,6 +133,10 @@ class BeltMon:
         diffsummary['deleted'] = 0
 
         for itemid, data in last[1].items():
+            if (type(data) == int):
+                # we have a placeholder (incremental value) for duplicated ids
+                continue
+
             newitem = {}
             newitem['states'] = []
 
@@ -155,9 +151,13 @@ class BeltMon:
                 diffitems[itemid] = newitem
                 continue
 
+            if (type(newdata) == int):
+                # we have a placeholder (incremental value) for duplicated ids
+                continue
+
             # we can compare to the new scan
             newitem['vol'] = data[3] - newdata[3]
-            diffsummary['vol'] += vol_diff
+            diffsummary['vol'] += newitem['vol']
 
             if (newitem['vol'] > 0):
                 # there is a mining occuring on that asteroid
@@ -171,16 +171,29 @@ class BeltMon:
         self.diffhistory.append([timestamp_actual, diffitems])
         self.summaryhistory.append([timestamp_actual, diffsummary])
 
-    def showAnalysis(self):
+        self.showAnalysis()
 
+    def showAnalysis(self):
+        """Show last diff data in monitor window."""
         #TODO:
         #   - show a multi-col-view with data from analysedData
         #   - show overall progress from progressData
-
-        return
+        dataIndex = len(self.datahistory) - 1
+        diffIndex = len(self.diffhistory) - 1
+        for itemID, itemDiff in self.diffhistory[diffIndex][1].items():
+            itemData = self.datahistory[dataIndex][1][itemID]
+            values = []
+            values.append(itemData[0])
+            values.append(itemData[1])
+            values.append(itemData[3])
+            values.append(itemDiff["vol"])
+            #TODO:
+            #   - calculate time
+            values.append("time")
+            self.monitor.listbox.appendItem(itemID, itemDiff["states"], values)
 
     def importData(self):
-        # reading from clipboard
+        """Reading new scan data from clipboard."""
         result = self.master.clipboard_get()
         if (result == ""):
             self.statusMessage("No valid clipboard data")
@@ -205,7 +218,7 @@ class BeltMon:
         lastCol = ''
         colIndex = 1
         timestamp = time.time()
-        datalist.clear()
+        datalist = {}
         total_types = 0
         total_asteroids = len(newData)
         total_duplicates = 0
@@ -279,14 +292,23 @@ class BeltMon:
                     total_duplicates
                 ]
             )
-        self.sessionapp.listbox._build_tree()
+        self.session.listbox.setData(self.importhistory)
 
         # export data to cvs file
         #TODO:
         #   - config for bool if user wants to export automatically
         self.exportData(time.gmtime(timestamp), newData)
 
+        self.analyseDiff()
+
     def exportData(self, timestamp, obj):
+        """This writes a csv file.
+
+
+        Keyword arguments:
+        timestamp -- POSIX timestamp
+        obj -- a list
+        """
         try:
             os.stat(data_dir)
         except:
@@ -296,13 +318,9 @@ class BeltMon:
             writer = csv.writer(f, lineterminator='\n')
             writer.writerows(obj)
 
-    def statusMessage(self, message):
-        self.output.configure(text=message)
-
 # if this is run as a program (versus being imported),
 # create a root window and an instance of our example,
 # then start the event loop
-
 if __name__ == "__main__":
     master = tk.Tk()
     myBeltMon = BeltMon(master)
