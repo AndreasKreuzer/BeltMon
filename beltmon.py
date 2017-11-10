@@ -231,10 +231,17 @@ class BeltMon:
         #TODO:
         #   - show a multi-col-view with data from analysedData
         #   - show overall progress from progressData
+
+        self.monitor.listbox.clear()
+
         dataIndex = len(self.datahistory) - 1
         diffIndex = len(self.diffhistory) - 1
         for itemID, itemDiff in self.diffhistory[diffIndex][1].items():
-            itemData = self.datahistory[dataIndex][1][itemID]
+            try:
+                itemData = self.datahistory[dataIndex][1][itemID]
+            except KeyError:
+                print("KeyError: for itemID of:", itemID)
+                continue
             values = []
             values.append(itemData[0])
             values.append(itemData[1])
