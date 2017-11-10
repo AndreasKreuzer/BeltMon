@@ -192,6 +192,7 @@ class BeltMon:
 
             newitem = {}
             newitem['states'] = []
+            newitem['vol'] = 0
 
             try:
                 newdata = actual[1][itemid]
@@ -209,7 +210,7 @@ class BeltMon:
                 continue
 
             # we can compare to the new scan
-            newitem['vol'] = data[3] - newdata[3]
+            newitem['vol'] = data[2] - newdata[2]
             diffsummary['vol'] += newitem['vol']
 
             if (newitem['vol'] > 0):
@@ -240,8 +241,11 @@ class BeltMon:
             try:
                 itemData = self.datahistory[dataIndex][1][itemID]
             except KeyError:
-                print("KeyError: for itemID of:", itemID)
-                continue
+                if ('deleted' in itemDiff['states']):
+                    itemData = self.datahistory[dataIndex - 1][1][itemID]
+                else:
+                    print("KeyError: for itemID of:", itemID, " state: ", itemDiff['states'])
+                    continue
             values = []
             values.append(itemData[0])
             values.append(itemData[1])
@@ -298,25 +302,25 @@ class BeltMon:
 
             line.insert(0, colIndex)
 
-            # asteroid items amount
-            line[2] = int(str.replace(line[2],"'",""))
+            # remove asteroid items amount
+            del line[2]
 
             # asteroid volume
-            line[3] = str.replace(line[3],"'","")
-            line[3] = int(str.replace(line[3]," m3",""))
+            line[2] = str.replace(line[2],"'","")
+            line[2] = int(str.replace(line[2]," m3",""))
 
             # distance to asteroid
-            line[4] = str.replace(line[4],"'","")
-            if (re.search(' m$', line[4])):
-                line[4] =  int(str.replace(line[4], " m",""))
+            line[3] = str.replace(line[3],"'","")
+            if (re.search(' m$', line[3])):
+                line[3] =  int(str.replace(line[3], " m",""))
             else:
-                line[4] =  int(str.replace(line[4], " km",""))
-                line[4] = 1000 * line[4]
+                line[3] =  int(str.replace(line[3], " km",""))
+                line[3] = 1000 * line[3]
 
             # we build a unique id with ore type and distance
             # this is a approach to resolve a problem not a solution
             try:
-                uniqueID = str(ores[line[1]]) + '_' + str(line[4])
+                uniqueID = str(ores[line[1]]) + '_' + str(line[3])
             except:
                 # ores dict not complete or no translation
                 print("error building uniqueID. ore type: ", line[1])

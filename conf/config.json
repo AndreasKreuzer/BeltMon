@@ -1,15 +1,15 @@
 {
-    "session": {
-        "geometry": "402x325+122+1012"
-    },
-    "application": {
-        "askforquit": 0
+    "miner": {
+        "avg_amount": 3282,
+        "cycle_duration": 62.5
     },
     "root": {
         "geometry": "522x503+544+837"
     },
-    "miner": {
-        "avg_amount": 3282,
-        "cycle_duration": 62.5
+    "application": {
+        "askforquit": 0
+    },
+    "session": {
+        "geometry": "402x325+122+1012"
     }
 }
