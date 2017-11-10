@@ -38,7 +38,7 @@ class listbox(object):
         """Setup treeview column headers."""
         for col in self.columns:
             self.tree.heading(col, text=col.title(),
-                command=lambda c=col: self._sortby(c, 0))
+                command=lambda c=col: self.sortby(c, 0))
             # adjust the column's width to the header string
             self.tree.column(col,
                 width=tkFont.Font().measure(col.title()))
@@ -53,7 +53,7 @@ class listbox(object):
                 if self.tree.column(self.columns[ix],width=None)<col_w:
                     self.tree.column(self.columns[ix], width=col_w)
 
-    def _sortby(self, col, descending):
+    def sortby(self, col, descending):
         """sort tree contents when a column header is clicked on"""
         # grab values to sort
         self.data = [(self.tree.set(child, col), child) \
@@ -65,7 +65,7 @@ class listbox(object):
         for ix, item in enumerate(self.data):
             self.tree.move(item[1], '', ix)
         # switch the heading so it will sort in the opposite direction
-        self.tree.heading(col, command=lambda col=col: self._sortby(col, \
+        self.tree.heading(col, command=lambda col=col: self.sortby(col, \
             int(not descending)))
 
     def setColumns(self, columns):
