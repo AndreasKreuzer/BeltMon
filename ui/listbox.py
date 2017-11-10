@@ -65,7 +65,7 @@ class listbox(object):
         for ix, item in enumerate(self.data):
             self.tree.move(item[1], '', ix)
         # switch the heading so it will sort in the opposite direction
-        tree.heading(col, command=lambda col=col: self._sortby(col, \
+        self.tree.heading(col, command=lambda col=col: self._sortby(col, \
             int(not descending)))
 
     def setColumns(self, columns):
