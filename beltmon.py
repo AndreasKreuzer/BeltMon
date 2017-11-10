@@ -256,6 +256,8 @@ class BeltMon:
             values.append("time")
             self.monitor.listbox.appendItem(itemID, itemDiff["states"], values)
 
+        self.monitor.listbox.sortby('type',1)
+
     def importData(self):
         """Reading new scan data from clipboard."""
         result = self.master.clipboard_get()
