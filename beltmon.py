@@ -82,7 +82,7 @@ class BeltMon:
     def writeConfig(self):
         """Write global config file."""
         with open(config_file, "w") as f:
-            json.dump(self.config, f, indent=4)
+            json.dump(self.config, f, indent=4, sort_keys=True)
 
     def analyseDiff(self):
         entries = len(self.datahistory)
