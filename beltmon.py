@@ -15,71 +15,6 @@ import ui.monitor
 config_file = "conf/config.json"
 data_dir = "data/"
 
-#TODO:
-#   - translations
-ores = {
-        'Veldspar': 1,
-        'Concentrated Veldspar': 2,
-        'Dense Veldspar': 3,
-        'Scordite': 4,
-        'Condensed Scordite': 5,
-        'Massive Scordite': 6,
-        'Pyroxeres': 7,
-        'Solid Pyroxeres': 8,
-        'Viscous Pyroxeres': 9,
-        'Plagioclase': 10,
-        'Azure Plagioclase': 11,
-        'Rich Plagioclase': 12,
-        'Omber': 13,
-        'Silvery Omber': 14,
-        'Golden Omber': 15,
-        'Kernite': 16,
-        'Luminous Kernite': 17,
-        'Fiery Kernite': 18,
-        'Jaspet': 19,
-        'Pure Jaspet': 20,
-        'Pristine Jaspet': 21,
-        'Hemorphite': 22,
-        'Vivid Hemorphite': 23,
-        'Radiant Hemorphite': 24,
-        'Hedbergite': 25,
-        'Vitric Hedbergite': 26,
-        'Glazed Hedbergite': 27,
-        'Gneiss': 28,
-        'Iridescent Gneiss': 29,
-        'Prismatic Gneiss': 30,
-        'Dark Ochre': 31,
-        'Onyx Ochre': 32,
-        'Obsidian Ochre': 33,
-        'Spodumain': 34,
-        'Bright Spodumain': 35,
-        'Gleaming Spodumain': 36,
-        'Crokite': 37,
-        'Sharp Crokite': 38,
-        'Crystalline Crokite': 39,
-        'Bistot': 40,
-        'Triclinic Bistot': 41,
-        'Monoclinic Bistot': 42,
-        'Arkonor': 43,
-        'Crimson Arkonor': 44,
-        'Prime Arkonor': 45,
-        'Mercoxit': 46,
-        'Magma Mercoxit': 47,
-        'Vitreous Mercoxit': 48,
-        'Clear Icicle': 49,
-        'White Glaze': 50,
-        'Blue Ice': 51,
-        'Glacial Mass': 52,
-        'Enriched Clear Icicle': 53,
-        'Pristine White Glaze': 54,
-        'Thick Blue Ice': 55,
-        'Smooth Glacial Mass': 56,
-        'Glare Crust': 57,
-        'Dark Glitter': 58,
-        'Gelidus': 59,
-        'Krystallos': 60,
-        }
-
 """
 TODO:
    - configuration of application
@@ -322,7 +257,7 @@ class BeltMon:
             # we build a unique id with ore type and distance
             # this is a approach to resolve a problem not a solution
             try:
-                uniqueID = str(ores[line[1]]) + '_' + str(line[3])
+                uniqueID = str(self.config["ores"][line[1]]) + '_' + str(line[3])
             except:
                 # ores dict not complete or no translation
                 print("error building uniqueID. ore type: ", line[1])
