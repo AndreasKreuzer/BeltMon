@@ -30,7 +30,7 @@ class window:
         self.listbox = listbox.listbox(self.frame, columns)
         self.listbox.setColumns(columns)
         self.submit = ttk.Button(self.frame, text="Import", \
-                command = self.core.importData)
+                command = self.core.importDataFromClipboard)
         self.output = ttk.Label(self.frame, text="")
 
         # lay the widgets out on the screen.
@@ -66,3 +66,7 @@ class window:
     def configureEvent(self):
         """Read and apply configuration object from core class."""
         self.master.geometry(self.core.config["root"]["geometry"])
+
+    def statusMessage(self, message):
+        """Show text in statusMessage label."""
+        self.output.configure(text=message)

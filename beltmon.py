@@ -193,26 +193,36 @@ class BeltMon:
 
         self.monitor.listbox.sortby('type',1)
 
-    def importData(self):
+    def importDataFromClipboard(self):
         """Reading new scan data from clipboard."""
         result = self.master.clipboard_get()
         if (result == ""):
-            self.statusMessage("No valid clipboard data")
+            self.monitor.statusMessage("No valid clipboard data")
             return
 
-        #TODO:
-        #   config for other delimiters enables import from excel?
         f = StringIO(result)
         reader = csv.reader(f, delimiter='\t')
-        newData = list(reader)
 
+        self.importData(list(reader))
+
+    def importDataFromFile(self, file_path):
+        """Reading new scan data from clipboard."""
+        with open(file_path, "r") as f:
+            reader = csv.reader(f)
+
+            self.importData(list(reader))
+
+    def importData(self, data):
+        """Import csv data and process into application."""
+        #TODO:
+        #   config for other delimiters enables import from excel?
         # clipboard data valid?
         try:
-            if (len(newData[0]) != 4):
-                self.statusMessage("No valid clipboard data")
+            if (len(data[0]) != 4):
+                self.monitor.statusMessage("No valid clipboard data")
                 return
         except:
-            self.statusMessage("No valid clipboard data")
+            self.monitor.statusMessage("No valid clipboard data")
             return
 
         # we build a new data set
@@ -221,10 +231,10 @@ class BeltMon:
         timestamp = time.time()
         datalist = {}
         total_types = 0
-        total_asteroids = len(newData)
+        total_asteroids = len(data)
         total_duplicates = 0
 
-        for line in newData:
+        for line in data:
             # skip if a caption label line is present
             if (len(line) != 4):
                 continue
@@ -298,7 +308,7 @@ class BeltMon:
         # export data to cvs file
         #TODO:
         #   - config for bool if user wants to export automatically
-        self.exportData(time.gmtime(timestamp), newData)
+        self.exportData(time.gmtime(timestamp), data)
 
         self.analyseDiff()
 
