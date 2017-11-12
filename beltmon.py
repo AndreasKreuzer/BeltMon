@@ -222,7 +222,6 @@ class BeltMon:
         #TODO:
         #   config for other delimiters enables import from excel?
         # clipboard data valid?
-        print(data)
         try:
             if (len(data[0]) != 4):
                 self.monitor.statusMessage("No valid data")
