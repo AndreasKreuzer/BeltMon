@@ -208,21 +208,27 @@ class BeltMon:
     def importDataFromFile(self, file_path):
         """Reading new scan data from clipboard."""
         with open(file_path, "r") as f:
-            reader = csv.reader(f)
+            reader = csv.reader(f, delimiter='\t')
 
             self.importData(list(reader))
+
+    def importDataTest(self):
+        """Import test data."""
+        self.importDataFromFile('tests/scan.5.txt')
+        self.importDataFromFile('tests/scan.6.txt')
 
     def importData(self, data):
         """Import csv data and process into application."""
         #TODO:
         #   config for other delimiters enables import from excel?
         # clipboard data valid?
+        print(data)
         try:
             if (len(data[0]) != 4):
-                self.monitor.statusMessage("No valid clipboard data")
+                self.monitor.statusMessage("No valid data")
                 return
         except:
-            self.monitor.statusMessage("No valid clipboard data")
+            self.monitor.statusMessage("No valid data")
             return
 
         # we build a new data set

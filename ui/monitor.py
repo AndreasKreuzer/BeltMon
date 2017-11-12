@@ -31,6 +31,8 @@ class window:
         self.listbox.setColumns(columns)
         self.submit = ttk.Button(self.frame, text="Import", \
                 command = self.core.importDataFromClipboard)
+        self.test = ttk.Button(self.frame, text="Test", \
+                command = self.core.importDataTest)
         self.output = ttk.Label(self.frame, text="")
 
         # lay the widgets out on the screen.
@@ -41,6 +43,7 @@ class window:
         self.frame.grid(sticky='nsew')
         self.output.grid(sticky='nsw')
         self.submit.grid(sticky='e')
+        self.test.grid(sticky='e')
 
         self.master.protocol("WM_DELETE_WINDOW", self.destroyWindow)
 
