@@ -108,10 +108,11 @@ class BeltMon:
         #   - analysedData (relative in between Scans)
         #   - progressData (over all progress)
 
-        timestamp_last = last[0]
-        timestamp_actual= actual[0]
+        timestamp_actual = actual[0]
+        time_elapsed = time.mktime(time.gmtime(actual[0])) \
+                - time.mktime(time.gmtime(last[0]))
+
         #TODO:
-        #   - calculate time delta
         #   - ensure time delta is big enough (2 * minercycle)
 
         diffitems = {}
@@ -119,6 +120,7 @@ class BeltMon:
         diffsummary['vol'] = 0
         diffsummary['active'] = 0
         diffsummary['deleted'] = 0
+        diffsummary['elapsed'] = time_elapsed
 
         for itemid, data in last[1].items():
             if (type(data) == int):
@@ -128,6 +130,7 @@ class BeltMon:
             newitem = {}
             newitem['states'] = []
             newitem['vol'] = 0
+            newitem['time'] = 0
 
             try:
                 newdata = actual[1][itemid]
@@ -152,6 +155,7 @@ class BeltMon:
                 # there is a mining occuring on that asteroid
                 newitem['states'].append('active')
                 diffsummary['active'] += 1
+                newitem['time'] = (newdata[2] / newitem['vol']) * time_elapsed
             else:
                 newitem['states'].append('inactive')
 
@@ -186,9 +190,7 @@ class BeltMon:
             values.append(itemData[1])
             values.append(itemData[3])
             values.append(itemDiff["vol"])
-            #TODO:
-            #   - calculate time
-            values.append("time")
+            values.append(itemDiff["time"])
             self.monitor.listbox.appendItem(itemID, itemDiff["states"], values)
 
         self.monitor.listbox.sortby('type',1)
